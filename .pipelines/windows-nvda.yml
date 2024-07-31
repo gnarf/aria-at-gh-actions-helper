@@ -34,7 +34,7 @@ resources:
       type: github
       endpoint: MyGitHubServiceConnection
       name: Prime-Access-Consulting/nvda-at-automation
-      ref: master
+      ref: main
     - repository: aria-at
       type: github
       endpoint: MyGitHubServiceConnection
