@@ -161,6 +161,7 @@ steps:
   inputs:
     workingDirectory: $(helper_dir)\nvda-at-automation\Server
     script: |
+      Write-Host "compiling main.go"
       go build main\main.go
 - task: Npm@1
   displayName: 'aria-at: npm install'
