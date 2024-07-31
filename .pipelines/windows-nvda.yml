@@ -74,6 +74,7 @@ steps:
       Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$(callback_header)"
       Write-Host "##vso[task.setvariable variable=BROWSER;]$(browser)"
       Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$(nvda_version)"
+      Get-ChildItem -Path Env:\
 
 - task: UseNode@1
   displayName: Install Node
@@ -89,6 +90,7 @@ steps:
   inputs:
     targetType: inline
     script: |
+      Get-ChildItem -Path Env:\
       $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
       $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
       $body = @{'status'='QUEUED'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
