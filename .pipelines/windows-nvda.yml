@@ -14,7 +14,7 @@ variables:
   - name: empty
     value: ''
   - name: helper_dir
-    value: '$(Agent.BuildDirectory)\..\helper'
+    value: '$(Agent.BuildDirectory)\helper'
 parameters:
 - name: aria_at_ref
   default: master
