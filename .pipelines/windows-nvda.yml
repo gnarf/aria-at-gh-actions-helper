@@ -13,6 +13,8 @@ pool:
 variables:
   - name: empty
     value: ''
+  - name: helper_dir
+    value: '$(Agent.BuildDirectory)\..\helper'
 parameters:
 - name: aria_at_ref
   default: master
@@ -96,15 +98,16 @@ steps:
 
 # Checkouts section
 - checkout: self
+  path: helper
 - checkout: nvda-at-automation
-  path: nvda-at-automation
+  path: helper/nvda-at-automation
 - checkout: aria-at
-  path: aria-at
+  path: helper/aria-at
 - task: PowerShell@2
   displayName: Checkout aria-at -> $(aria_at_ref)
   inputs:
     targetType: 'inline'
-    workingDirectory: $(Build.SourcesDirectory)/aria-at
+    workingDirectory: $(helper_dir)/aria-at
     script: git checkout $(aria_at_ref)
 - checkout: aria-at-automation-harness
-  path: aria-at-automation-harness
+  path: helper/aria-at-automation-harness
