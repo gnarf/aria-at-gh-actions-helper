@@ -71,7 +71,7 @@ steps:
       Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$(test_pattern)"
       Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_URL;]$(callback_url)"
       Write-Host "##vso[task.setvariable variable=ARIA_AT_STATUS_URL;]$(status_url)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;issecret=true]$(callback_header)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$(callback_header)"
       Write-Host "##vso[task.setvariable variable=BROWSER;]$(browser)"
       Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$(nvda_version)"
 
