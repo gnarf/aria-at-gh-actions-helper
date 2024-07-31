@@ -77,10 +77,10 @@ steps:
   displayName: Install Node
   inputs:
     version: '20.x'
-- task: GoTool@0
-  displayName: Install Go
-  inputs:
-    version: '1.10'
+# - task: GoTool@0
+#   displayName: Install Go
+#   inputs:
+#     version: '1.10'
 - task: PowerShell@2
   displayName: Log job state QUEUED
   condition: ${{ ne(parameters['status_url'], '$(empty)') }}
@@ -96,16 +96,16 @@ steps:
 
 # Checkouts section
 - checkout: self
-  path: helper
+  path: $(Build.SourcesDirectory)
 - checkout: nvda-at-automation
-  path: helper/nvda-at-automation
+  path: $(Build.SourcesDirectory)/nvda-at-automation
 - checkout: aria-at
-  path: helper/aria-at
+  path: $(Build.SourcesDirectory)/aria-at
 - task: PowerShell@2
   displayName: Checkout aria-at -> $(aria_at_ref)
   inputs:
     targetType: 'inline'
-    workingDirectory: $(Build.SourcesDirectory)/helper/aria-at
+    workingDirectory: $(Build.SourcesDirectory)/aria-at
     script: git checkout $(aria_at_ref)
 - checkout: aria-at-automation-harness
-  path: helper/aria-at-automation-harness
+  path: $(Build.SourcesDirectory)/aria-at-automation-harness
