@@ -66,6 +66,7 @@ steps:
   inputs:
     targetType: inline
     script: |
+      Get-ChildItem -Path Env:\
       Write-Host "Making inputs available as an environment variable."
       Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$(work_dir)"
       Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$(test_pattern)"
