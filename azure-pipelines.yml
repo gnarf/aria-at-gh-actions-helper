@@ -10,14 +10,22 @@ pool:
   vmImage: windows-latest
 
 variables:
-- aria_at_ref: main
-- browser: chrome
-- nvda_version: 'latest'
-- test_pattern: '{reference/**,test-*-nvda.*}'
-- work_dir: 'tests/alert'
-- callback_header: ''
-- callback_url: ''
-- status_url: ''
+- name: aria_at_ref
+  value: main
+- name: browser
+  value: chrome
+- name: nvda_version
+  value: 'latest'
+- name: test_pattern
+  value: '{reference/**,test-*-nvda.*}'
+- name: work_dir
+  value: 'tests/alert'
+- name: callback_header
+  value: ''
+- name: callback_url
+  value: ''
+- name: status_url
+  value: ''
 
 steps:
 # List of azure tasks
