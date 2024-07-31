@@ -135,3 +135,4 @@ steps:
       defaultVersionType: specificTag
       version: ${{ parameters['nvda_version'] }}
     downloadPath: $(helper_dir)/nvda-portable
+- pwsh: dir $(helper_dir)\nvda-portable
