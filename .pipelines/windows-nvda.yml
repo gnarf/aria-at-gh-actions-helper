@@ -102,11 +102,11 @@ steps:
 - checkout: aria-at
   path: helper/aria-at
 - task: PowerShell@2
-  displayName: checkout aria-at $(aria_at_ref)
+  displayName: Checkout aria-at -> $(aria_at_ref)
   inputs:
     targetType: 'inline'
     script: |
-      cd aria-at
-      git reset --hard $(aria_at_ref)
+      cd helper\aria-at
+      git checkout $(aria_at_ref)
 - checkout: aria-at-automation-harness
   path: helper/aria-at-automation-harness
