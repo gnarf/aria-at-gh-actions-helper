@@ -180,7 +180,8 @@ steps:
     command: 'install'
 - task: PowerShell@2
   displayName: Log job state RUNNING
-  condition: ${{ ne(parameters['status_url'], '$(empty)') }}
+  # weird syntaxing because parameters only exists in ${{ }} land, but succeeded() doesn't exist there
+  condition: and(succeeded(), ${{ ne(parameters['status_url'], '$(empty)') }} )
   inputs:
     targetType: inline
     script: |
@@ -210,6 +211,7 @@ steps:
       Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
 - task: PowerShell@2
   displayName: Log job state COMPLETED
+  # weird syntaxing because parameters only exists in ${{ }} land, but succeeded() doesn't exist there
   condition: and(succeeded(), ${{ ne(parameters['status_url'], '$(empty)') }} )
   inputs:
     targetType: inline
