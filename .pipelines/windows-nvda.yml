@@ -135,4 +135,18 @@ steps:
       defaultVersionType: specificTag
       version: ${{ parameters['nvda_version'] }}
     downloadPath: $(helper_dir)/nvda-portable
-- pwsh: dir $(helper_dir)\nvda-portable
+- task: PowerShell@2
+  displayName: Install Scream (virtual audio driver)
+  inputs:
+    targetType: 'inline'
+    script: |
+      Start-Service audio*
+      Invoke-WebRequest https://github.com/duncanthrax/scream/releases/download/3.6/Scream3.6.zip -OutFile $(helper_dir)\Scream3.6.zip
+      Expand-Archive -Path $(helper_dir)\Scream3.6.zip -DestinationPath $(helper_dir)\Scream
+      $cert = (Get-AuthenticodeSignature $(helper_dir)\Scream\Install\driver\Scream.sys).SignerCertificate
+      $store = [System.Security.Cryptography.X509Certificates.X509Store]::new("TrustedPublisher", "LocalMachine")
+      $store.Open("ReadWrite")
+      $store.Add($cert)
+      $store.Close()
+      cd $(helper_dir)\Scream\Install\driver
+      $(helper_dir)\Scream\Install\helpers\devcon install Scream.inf *Scream
