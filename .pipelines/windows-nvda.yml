@@ -61,13 +61,13 @@ steps:
     targetType: inline
     script: |
       Write-Host "Making inputs available as an environment variable."
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$(variables.work_dir)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$(variables.test_pattern)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_URL;]$(variables.callback_url)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_STATUS_URL;]$(variables.status_url)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$(variables.callback_header)"
-      Write-Host "##vso[task.setvariable variable=BROWSER;]$(variables.browser)"
-      Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$(variables.nvda_version)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$(work_dir)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$(test_pattern)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_URL;]$(callback_url)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_STATUS_URL;]$(status_url)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;issecret=true]$(callback_header)"
+      Write-Host "##vso[task.setvariable variable=BROWSER;]$(browser)"
+      Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$(nvda_version)"
 
 - task: UseNode@1
   displayName: Install Node
