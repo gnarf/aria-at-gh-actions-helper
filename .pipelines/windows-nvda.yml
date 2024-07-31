@@ -23,10 +23,13 @@ parameters:
   default: 'tests/alert'
 - name: callback_header
   default: ''
+  required: false
 - name: callback_url
   default: ''
+  required: false
 - name: status_url
   default: ''
+  required: false
 
 resources:
   repositories:
@@ -79,7 +82,7 @@ steps:
     version: '1.10'
 - task: PowerShell@2
   displayName: Log job state QUEUED
-  condition: ne(parameters['status_url'], '')
+  condition: ${{ ne(parameters['status_url'], '') }}
   inputs:
     targetType: inline
     script: |
