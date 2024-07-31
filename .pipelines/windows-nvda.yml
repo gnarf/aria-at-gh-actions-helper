@@ -12,21 +12,21 @@ pool:
 
 parameters:
 - name: aria_at_ref
-  value: master
+  default: master
 - name: browser
-  value: chrome
+  default: chrome
 - name: nvda_version
-  value: 'latest'
+  default: 'latest'
 - name: test_pattern
-  value: '{reference/**,test-*-nvda.*}'
+  default: '{reference/**,test-*-nvda.*}'
 - name: work_dir
-  value: 'tests/alert'
+  default: 'tests/alert'
 - name: callback_header
-  value: ''
+  default: ''
 - name: callback_url
-  value: ''
+  default: ''
 - name: status_url
-  value: ''
+  default: ''
 
 resources:
   repositories:
