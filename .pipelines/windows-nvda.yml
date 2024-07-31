@@ -74,7 +74,6 @@ steps:
   inputs:
     targetType: inline
     script: |
-      Get-ChildItem -Path Env:\
       Write-Host "Making inputs available as an environment variable."
       Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$env:p_work_dir"
       Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$env:p_test_pattern"
@@ -83,7 +82,6 @@ steps:
       Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$env:p_callback_header"
       Write-Host "##vso[task.setvariable variable=BROWSER;]$env:p_browser"
       Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$env:p_nvda_version"
-      Get-ChildItem -Path Env:\
 
 - task: UseNode@1
   displayName: Install Node
@@ -99,7 +97,6 @@ steps:
   inputs:
     targetType: inline
     script: |
-      Get-ChildItem -Path Env:\
       $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
       $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
       $body = @{'status'='QUEUED'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
@@ -110,16 +107,19 @@ steps:
 # Checkouts section
 - checkout: self
   path: helper
-- checkout: nvda-at-automation
-  path: helper/nvda-at-automation
+  name: Checkout aria-at-gh-actions-helper
+- checkout: aria-at-automation-harness
+  path: helper/aria-at-automation-harness
 - checkout: aria-at
   fetchDepth: 0
   path: helper/aria-at
+  name: Checkout aria-at
 - task: PowerShell@2
-  displayName: Checkout aria-at -> ${{ parameters['aria_at_ref'] }}
+  displayName: Checkout aria-at to ${{ parameters['aria_at_ref'] }}
   inputs:
     targetType: 'inline'
     workingDirectory: $(helper_dir)/aria-at
     script: git checkout ${{ parameters['aria_at_ref'] }}
-- checkout: aria-at-automation-harness
-  path: helper/aria-at-automation-harness
+- checkout: nvda-at-automation
+  path: helper/nvda-at-automation
+  name: Checkout nvda-at-automation
