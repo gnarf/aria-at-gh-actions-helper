@@ -101,8 +101,6 @@ steps:
       $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
       $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
       $body = @{'status'='QUEUED'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
-      $headers | ConvertTo-Json
-      Write-Host "body: $body"
       Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
 
 # Checkouts section
@@ -136,6 +134,14 @@ steps:
       version: ${{ parameters['nvda_version'] }}
     downloadPath: $(helper_dir)/nvda-portable
 - task: PowerShell@2
+  displayName: Setup NVDA_PORTABLE_ZIP
+  inputs:
+    targetType: inline
+    script: |
+      $zipFile=Get-ChildItem $(helper_dir)\nvda-portable -File -Filter *.zip | Select-Object -First 1 -ExpandProperty FullName
+      Write-Host "NVDA_PORTABLE_ZIP="
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$zipFile"
+- task: PowerShell@2
   displayName: Install Scream (virtual audio driver)
   inputs:
     targetType: 'inline'
@@ -150,3 +156,63 @@ steps:
       $store.Close()
       cd $(helper_dir)\Scream\Install\driver
       $(helper_dir)\Scream\Install\helpers\devcon install Scream.inf *Scream
+- task: PowerShell@2
+  displayName: Compile at-automation driver
+  inputs:
+    workingDirectory: $(helper_dir)\nvda-at-automation\Server
+    script: |
+      go build main\main.go
+- task: Npm@1
+  displayName: 'aria-at: npm install'
+  inputs:
+    workingDir: $(helper_dir)\aria-at
+    command: 'install'
+- task: Npm@1
+  displayName: 'aria-at: npm build'
+  inputs:
+    workingDir: $(helper_dir)\aria-at
+    command: 'build'
+- task: Npm@1
+  displayName: 'aria-at-automation-harness: npm install'
+  inputs:
+    workingDir: $(helper_dir)\aria-at-automation-harness
+    command: 'install'
+- task: PowerShell@2
+  displayName: Log job state RUNNING
+  condition: ${{ ne(parameters['status_url'], '$(empty)') }}
+  inputs:
+    targetType: inline
+    script: |
+      $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
+      $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
+      $body = @{'status'='RUNNING'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
+      Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
+
+- task: PowerShell@2
+  displayName: Run harness
+  inputs:
+    targetType: inline
+    workingDirectory: $(helper_dir)
+    script: |
+      & .\run-tester.ps1
+
+- task: PowerShell@2
+  displayName: Log job state ERROR
+  condition: ${{ and(failed(), ne(parameters['status_url'], '$(empty)')) }}
+  inputs:
+    targetType: inline
+    script: |
+      $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
+      $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
+      $body = @{'status'='ERROR'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
+      Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
+- task: PowerShell@2
+  displayName: Log job state COMPLETED
+  condition: ${{ and(succeeded(), ne(parameters['status_url'], '$(empty)')) }}
+  inputs:
+    targetType: inline
+    script: |
+      $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
+      $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
+      $body = @{'status'='COMPLETED'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
+      Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
