@@ -126,12 +126,12 @@ steps:
   path: helper/nvda-at-automation
   displayName: Checkout nvda-at-automation
 - task: DownloadGitHubRelease@0
-  displayName: Download nvda portable $(NVDA_VERSION)
+  displayName: Download nvda portable ${{ parameters['nvda_version'] }}
   # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/download-github-release-v0?view=azure-pipelines
   inputs:
     connection: MyGitHubServiceConnection
     userRepository: bocoup/aria-at-automation-nvda-builds
-    ${{ if ne(variables['NVDA_VERSION'], 'latest')}}:
+    ${{ if ne(parameters['nvda_version'], 'latest')}}:
       defaultVersionType: specificTag
-      version: $(NVDA_VERSION)
+      version: ${{ parameters['nvda_version'] }}
     downloadPath: $(helper_dir)/nvda-portable
