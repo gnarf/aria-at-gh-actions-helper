@@ -91,7 +91,7 @@ steps:
     script: |
       $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
       $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
-      $body = @{'status'='QUEUED'; 'externalLogsUrl'="$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"} | ConvertTo-JSON
+      $body = @{'status'='QUEUED'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
       $headers | ConvertTo-Json
       Write-Host "body: $body"
       Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
