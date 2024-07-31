@@ -116,10 +116,10 @@ steps:
   fetchDepth: 0
   path: helper/aria-at
 - task: PowerShell@2
-  displayName: Checkout aria-at -> $(aria_at_ref)
+  displayName: Checkout aria-at -> ${{ parameters['aria_at_ref'] }}
   inputs:
     targetType: 'inline'
     workingDirectory: $(helper_dir)/aria-at
-    script: git checkout $(aria_at_ref)
+    script: git checkout ${{ parameters['aria_at_ref'] }}
 - checkout: aria-at-automation-harness
   path: helper/aria-at-automation-harness
