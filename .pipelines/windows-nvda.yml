@@ -107,13 +107,14 @@ steps:
 # Checkouts section
 - checkout: self
   path: helper
-  name: Checkout aria-at-gh-actions-helper
+  displayName: Checkout aria-at-gh-actions-helper
 - checkout: aria-at-automation-harness
   path: helper/aria-at-automation-harness
+  displayName: Checkout aria-at-automation-harness
 - checkout: aria-at
   fetchDepth: 0
   path: helper/aria-at
-  name: Checkout aria-at
+  displayName: Checkout aria-at
 - task: PowerShell@2
   displayName: Checkout aria-at to ${{ parameters['aria_at_ref'] }}
   inputs:
@@ -122,4 +123,4 @@ steps:
     script: git checkout ${{ parameters['aria_at_ref'] }}
 - checkout: nvda-at-automation
   path: helper/nvda-at-automation
-  name: Checkout nvda-at-automation
+  displayName: Checkout nvda-at-automation
