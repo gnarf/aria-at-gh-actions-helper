@@ -1,0 +1,32 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: windows-latest
+
+variables:
+- aria_at_ref: main
+- browser: chrome
+- nvda_version: 'latest'
+- test_pattern: '{reference/**,test-*-nvda.*}'
+- work_dir: 'tests/alert'
+- callback_header: ''
+- callback_url: ''
+- status_url: ''
+
+steps:
+# List of azure tasks
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/?view=azure-pipelines&viewFallbackFrom=azure-devops
+- task: UseNode@1
+  displayName: Install Node
+  inputs:
+    version: '20.x'
+- task: GoTool@0
+  displayName: Install Go
+  inputs:
+    version: '1.10'
