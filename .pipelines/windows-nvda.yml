@@ -15,8 +15,7 @@ variables:
     value: ''
   - name: helper_dir
     value: '$(Agent.BuildDirectory)\helper'
-  - name: github_connection
-    value: MyGitHubServiceConnection
+
 parameters:
 - name: aria_at_ref
   default: master
@@ -39,18 +38,18 @@ resources:
   repositories:
     - repository: nvda-at-automation
       type: github
-      endpoint: $(github_connection)
+      endpoint: MyGitHubServiceConnection
       name: Prime-Access-Consulting/nvda-at-automation
       ref: main
     - repository: aria-at
       type: github
-      endpoint: $(github_connection)
+      endpoint: MyGitHubServiceConnection
       name: w3c/aria-at
       fetchDepth: 0
       ref: master
     - repository: aria-at-automation-harness
       type: github
-      endpoint: $(github_connection)
+      endpoint: MyGitHubServiceConnection
       name: w3c/aria-at-automation-harness
       ref: main
 
@@ -130,7 +129,7 @@ steps:
   displayName: Download nvda portable $(NVDA_VERSION)
   # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/download-github-release-v0?view=azure-pipelines
   inputs:
-    connection: $(github_connection)
+    connection: MyGitHubServiceConnection
     userRepository: bocoup/aria-at-automation-nvda-builds
     ${{ if ne(variables['NVDA_VERSION'], 'latest')}}:
       defaultVersionType: specificTag
