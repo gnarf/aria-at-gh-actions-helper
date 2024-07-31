@@ -90,7 +90,7 @@ steps:
       $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
       $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
       $body = @{'status'='QUEUED'; 'externalLogsUrl'="$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"} | ConvertTo-JSON
-      Write-Host "headers: $headers"
+      $headers | ConvertTo-Json
       Write-Host "body: $body"
       Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
 
@@ -105,8 +105,7 @@ steps:
   displayName: Checkout aria-at -> $(aria_at_ref)
   inputs:
     targetType: 'inline'
-    script: |
-      cd helper\aria-at
-      git checkout $(aria_at_ref)
+    workingDirectory: helper/aria-at
+    script: git checkout $(aria_at_ref)
 - checkout: aria-at-automation-harness
   path: helper/aria-at-automation-harness
