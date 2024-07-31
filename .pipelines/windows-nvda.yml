@@ -27,15 +27,6 @@ variables:
 - name: status_url
   value: ''
 
-env:
-  ARIA_AT_WORK_DIR: ${{ variables.work_dir }}
-  ARIA_AT_TEST_PATTERN: ${{ variables.test_pattern }}
-  ARIA_AT_CALLBACK_URL: ${{ variables.callback_url }}
-  ARIA_AT_STATUS_URL: ${{ variables.status_url }}
-  ARIA_AT_CALLBACK_HEADER: ${{ variables.callback_header }}
-  BROWSER: ${{ variables.browser }}
-  NVDA_VERSION: ${{ variables.nvda_version }}
-
 # Tasks documentation
 # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/?view=azure-pipelines&viewFallbackFrom=azure-devops
 # Conditionals documentation
@@ -43,6 +34,20 @@ env:
 # Expressions / Functions
 # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops
 steps:
+# Method borrowed from https://stackoverflow.com/a/63959970
+- task: PowerShell@2
+  displayName: Setup env vars
+  inputs:
+    targetType: inline
+    script: |
+      Write-Host "Making inputs available as an environment variable."
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$(variables.work_dir)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$(variables.test_pattern)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_URL;]$(variables.callback_url)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_STATUS_URL;]$(variables.status_url)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$(variables.callback_header)"
+      Write-Host "##vso[task.setvariable variable=BROWSER;]$(variables.browser)"
+      Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$(variables.nvda_version)"
 
 - task: UseNode@1
   displayName: Install Node
