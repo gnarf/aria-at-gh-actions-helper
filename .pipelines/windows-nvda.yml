@@ -159,9 +159,9 @@ steps:
 - task: PowerShell@2
   displayName: Compile at-automation driver
   inputs:
+    targetType: 'inline'
     workingDirectory: $(helper_dir)\nvda-at-automation\Server
     script: |
-      Write-Host "compiling main.go"
       go build main\main.go
 - task: Npm@1
   displayName: 'aria-at: npm install'
