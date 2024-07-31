@@ -28,6 +28,25 @@ variables:
 - name: status_url
   value: ''
 
+resources:
+  respositories:
+    - repository: nvda-at-automation
+      type: github
+      endpoint: MyGitHubServiceConnection
+      name: Prime-Access-Consulting/nvda-at-automation
+      ref: master
+    - repository: aria-at
+      type: github
+      endpoint: MyGitHubServiceConnection
+      name: w3c/aria-at
+      ref: '$( variables.aria_at_ref )'
+    - repository: aria-at-automation-harness
+      type: github
+      endpoint: MyGitHubServiceConnection
+      name: w3c/aria-at-automation-harness
+      ref: main
+
+
 # Tasks documentation
 # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/?view=azure-pipelines&viewFallbackFrom=azure-devops
 # Conditionals documentation
@@ -72,9 +91,9 @@ steps:
 # Checkouts section
 - checkout: self
   path: helper
-- checkout: git@github.com:Prime-Access-Consulting/nvda-at-automation@main
+- checkout: nvda-at-automation
   path: helper/nvda-at-automation
-- checkout: git@github.com:w3c/aria-at@$( variables.aria_at_ref )
+- checkout: aria-at
   path: helper/aria-at
-- checkout: git@github.com:w3c/aria-at-automation-harness@main
+- checkout: aria-at-automation-harness
   path: helper/aria-at-automation-harness
