@@ -63,18 +63,26 @@ steps:
 # Method borrowed from https://stackoverflow.com/a/63959970
 - task: PowerShell@2
   displayName: Setup env vars
+  env:
+    p_work_dir: ${{ parameters['work_dir'] }}
+    p_test_pattern: ${{ parameters['test_pattern'] }}
+    p_callback_url: ${{ parameters['callback_url'] }}
+    p_status_url: ${{ parameters['status_url'] }}
+    p_callback_header: ${{ parameters['callback_header'] }}
+    p_browser: ${{ parameters['browser'] }}
+    p_nvda_version: ${{ parameters['nvda_version'] }}
   inputs:
     targetType: inline
     script: |
       Get-ChildItem -Path Env:\
       Write-Host "Making inputs available as an environment variable."
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$(work_dir)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$(test_pattern)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_URL;]$(callback_url)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_STATUS_URL;]$(status_url)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$(callback_header)"
-      Write-Host "##vso[task.setvariable variable=BROWSER;]$(browser)"
-      Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$(nvda_version)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$(p_work_dir)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$(p_test_pattern)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_URL;]$(p_callback_url)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_STATUS_URL;]$(p_status_url)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$(p_callback_header)"
+      Write-Host "##vso[task.setvariable variable=BROWSER;]$(p_browser)"
+      Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$(p_nvda_version)"
       Get-ChildItem -Path Env:\
 
 - task: UseNode@1
