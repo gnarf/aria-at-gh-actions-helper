@@ -138,8 +138,8 @@ steps:
   inputs:
     targetType: inline
     script: |
-      $zipFile=Get-ChildItem $(helper_dir)\nvda-portable -File -Filter *.zip | Select-Object -First 1 -ExpandProperty FullName
-      Write-Host "NVDA_PORTABLE_ZIP="
+      $zipFile = Get-ChildItem $(helper_dir)\nvda-portable -File -Filter *.zip | Select-Object -First 1 -ExpandProperty FullName
+      Write-Host "NVDA_PORTABLE_ZIP=$zipFile"
       Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$zipFile"
 - task: PowerShell@2
   displayName: Install Scream (virtual audio driver)
@@ -198,6 +198,7 @@ steps:
 
 - task: PowerShell@2
   displayName: Log job state ERROR
+  # weird syntaxing because parameters only exists in ${{ }} land, but failed() doesn't exist there
   condition: and(failed(), ${{ ne(parameters['status_url'], '$(empty)') }} )
   inputs:
     targetType: inline
