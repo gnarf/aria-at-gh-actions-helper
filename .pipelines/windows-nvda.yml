@@ -102,6 +102,7 @@ steps:
 - checkout: nvda-at-automation
   path: helper/nvda-at-automation
 - checkout: aria-at
+  fetchDepth: 0
   path: helper/aria-at
 - task: PowerShell@2
   displayName: Checkout aria-at -> $(aria_at_ref)
