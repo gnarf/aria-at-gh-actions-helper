@@ -172,7 +172,8 @@ steps:
   displayName: 'aria-at: npm build'
   inputs:
     workingDir: $(helper_dir)\aria-at
-    command: 'build'
+    command: 'custom'
+    customCommand: 'run build'
 - task: Npm@1
   displayName: 'aria-at-automation-harness: npm install'
   inputs:
