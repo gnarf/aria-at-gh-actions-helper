@@ -76,13 +76,13 @@ steps:
     script: |
       Get-ChildItem -Path Env:\
       Write-Host "Making inputs available as an environment variable."
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$(p_work_dir)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$(p_test_pattern)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_URL;]$(p_callback_url)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_STATUS_URL;]$(p_status_url)"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$(p_callback_header)"
-      Write-Host "##vso[task.setvariable variable=BROWSER;]$(p_browser)"
-      Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$(p_nvda_version)"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$env:p_work_dir"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$env:p_test_pattern"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_URL;]$env:p_callback_url"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_STATUS_URL;]$env:p_status_url"
+      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$env:p_callback_header"
+      Write-Host "##vso[task.setvariable variable=BROWSER;]$env:p_browser"
+      Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$env:p_nvda_version"
       Get-ChildItem -Path Env:\
 
 - task: UseNode@1
