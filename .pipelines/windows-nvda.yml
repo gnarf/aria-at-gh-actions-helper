@@ -39,7 +39,7 @@ resources:
       type: github
       endpoint: MyGitHubServiceConnection
       name: w3c/aria-at
-      ref: '$( variables.aria_at_ref )'
+      ref: ${{ variables['aria_at_ref'] }}
     - repository: aria-at-automation-harness
       type: github
       endpoint: MyGitHubServiceConnection
