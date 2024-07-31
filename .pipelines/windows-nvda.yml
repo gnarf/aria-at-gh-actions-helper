@@ -105,7 +105,7 @@ steps:
   displayName: Checkout aria-at -> $(aria_at_ref)
   inputs:
     targetType: 'inline'
-    workingDirectory: helper/aria-at
+    workingDirectory: $(Build.SourcesDirectory)/helper/aria-at
     script: git checkout $(aria_at_ref)
 - checkout: aria-at-automation-harness
   path: helper/aria-at-automation-harness
