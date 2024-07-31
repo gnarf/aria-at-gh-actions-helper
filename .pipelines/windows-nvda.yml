@@ -29,7 +29,7 @@ variables:
   value: ''
 
 resources:
-  respositories:
+  repositories:
     - repository: nvda-at-automation
       type: github
       endpoint: MyGitHubServiceConnection
