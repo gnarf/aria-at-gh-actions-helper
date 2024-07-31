@@ -10,7 +10,7 @@ trigger:
 pool:
   vmImage: windows-latest
 
-variables:
+paramaters:
 - name: aria_at_ref
   value: master
 - name: browser
@@ -39,7 +39,7 @@ resources:
       type: github
       endpoint: MyGitHubServiceConnection
       name: w3c/aria-at
-      ref: ${{ variables['aria_at_ref'] }}
+      ref: ${{ paramaters['aria_at_ref'] }}
     - repository: aria-at-automation-harness
       type: github
       endpoint: MyGitHubServiceConnection
@@ -79,7 +79,7 @@ steps:
     version: '1.10'
 - task: PowerShell@2
   displayName: Log job state QUEUED
-  condition: ne(variables['status_url'], '')
+  condition: ne(paramaters['status_url'], '')
   inputs:
     targetType: inline
     script: |
