@@ -10,6 +10,9 @@ trigger:
 pool:
   vmImage: windows-latest
 
+variables:
+  - name: empty
+    value: ''
 parameters:
 - name: aria_at_ref
   default: master
@@ -22,14 +25,11 @@ parameters:
 - name: work_dir
   default: 'tests/alert'
 - name: callback_header
-  default: ''
-  required: false
+  default: $(empty)
 - name: callback_url
-  default: ''
-  required: false
+  default: $(empty)
 - name: status_url
-  default: ''
-  required: false
+  default: $(empty)
 
 resources:
   repositories:
