@@ -1,7 +1,9 @@
 # ignore everything
 **/*
 # whitelist files we want
-!*.log
-!*.png
-# trying to not include subdirectories here
-*/*
+!at-driver.log
+!harness-run.log
+!http-testing.log
+!nvda.log
+!webdriver.log
+!tes*.png
