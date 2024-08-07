@@ -187,7 +187,6 @@ jobs:
         env:
           NVDA_PORTABLE_ZIP: ${{ fromJson(steps.nvda-portable-download.outputs.downloaded_files)[0] }}
         run: |
-          Get-ChildItem env:
           & .\run-tester.ps1
 
       - name: Log job state ERROR

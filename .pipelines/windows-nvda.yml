@@ -140,7 +140,7 @@ steps:
     script: |
       $zipFile = Get-ChildItem $(helper_dir)\nvda-portable -File -Filter *.zip | Select-Object -First 1 -ExpandProperty FullName
       Write-Host "NVDA_PORTABLE_ZIP=$zipFile"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$zipFile"
+      Write-Host "##vso[task.setvariable variable=NVDA_PORTABLE_ZIP;]$zipFile"
 - task: PowerShell@2
   displayName: Install Scream (virtual audio driver)
   inputs:
@@ -197,6 +197,7 @@ steps:
     targetType: inline
     workingDirectory: $(helper_dir)
     script: |
+      Get-ChildItem env:
       & .\run-tester.ps1
 
 - task: PowerShell@2
