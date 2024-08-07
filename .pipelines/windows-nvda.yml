@@ -197,7 +197,6 @@ steps:
     targetType: inline
     workingDirectory: $(helper_dir)
     script: |
-      Get-ChildItem env:
       & .\run-tester.ps1
 
 - task: PowerShell@2

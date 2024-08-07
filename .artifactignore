@@ -1,5 +1,7 @@
 # ignore everything
 **/*
 # whitelist files we want
-!/*.log
-!/*.png
+!*.log
+!*.png
+# trying to not include subdirectories here
+*/*
