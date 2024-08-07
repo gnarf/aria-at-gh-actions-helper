@@ -222,3 +222,10 @@ steps:
       $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
       $body = @{'status'='COMPLETED'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
       Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
+- task: PublishPipelineArtifact@1
+  displayName: Publish logs
+  # always run
+  condition: or(field(), succeeded())
+  inputs:
+    targetPath: $(helper_dir)
+    artifact: logs
