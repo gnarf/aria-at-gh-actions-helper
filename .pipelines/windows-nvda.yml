@@ -225,7 +225,7 @@ steps:
 - task: PublishPipelineArtifact@1
   displayName: Publish logs
   # always run
-  condition: or(field(), succeeded())
+  condition: or(failed(), succeeded())
   inputs:
     targetPath: $(helper_dir)
     artifact: logs
