@@ -1,0 +1,5 @@
+# ignore everything
+**/*
+# whitelist files we want
+!*.log
+!*.png

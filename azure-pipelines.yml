@@ -1,0 +1,74 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: windows-latest
+
+variables:
+- name: aria_at_ref
+  value: master
+- name: browser
+  value: chrome
+- name: nvda_version
+  value: 'latest'
+- name: test_pattern
+  value: '{reference/**,test-*-nvda.*}'
+- name: work_dir
+  value: 'tests/alert'
+- name: callback_header
+  value: ''
+- name: callback_url
+  value: ''
+- name: status_url
+  value: ''
+
+env:
+  ARIA_AT_WORK_DIR: ${{ variables.work_dir }}
+  ARIA_AT_TEST_PATTERN: ${{ variables.test_pattern }}
+  ARIA_AT_CALLBACK_URL: ${{ variables.callback_url }}
+  ARIA_AT_STATUS_URL: ${{ variables.status_url }}
+  ARIA_AT_CALLBACK_HEADER: ${{ variables.callback_header }}
+  BROWSER: ${{ variables.browser }}
+  NVDA_VERSION: ${{ variables.nvda_version }}
+
+# Tasks documentation
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/?view=azure-pipelines&viewFallbackFrom=azure-devops
+# Conditionals documentation
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml
+# Expressions / Functions
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops
+steps:
+
+- task: UseNode@1
+  displayName: Install Node
+  inputs:
+    version: '20.x'
+- task: GoTool@0
+  displayName: Install Go
+  inputs:
+    version: '1.10'
+- task: PowerShell@2
+  displayName: Log job state QUEUED
+  condition: ne(variables['status_url'], '')
+  inputs:
+    targetType: inline
+    script: |
+      $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
+      $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
+      $body = @{'status'='QUEUED'; 'externalLogsUrl'="$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"} | ConvertTo-JSON
+      Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
+
+# Checkouts section
+- checkout: self
+  path: helper
+- checkout: git@github.com:Prime-Access-Consulting/nvda-at-automation@main
+  path: helper/nvda-at-automation
+- checkout: git@github.com:w3c/aria-at@$( variables.aria_at_ref )
+  path: helper/aria-at
+- checkout: git@github.com:w3c/aria-at-automation-harness@main
+  path: helper/aria-at-automation-harness
