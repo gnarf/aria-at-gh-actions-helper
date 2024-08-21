@@ -131,14 +131,6 @@ steps:
       npm install
       DEBUG=* ./bin/at-driver install --unattended
 
-- task: Bash@3
-  displayName: Wait for automation-driver server
-  inputs:
-    targetType: 'inline'
-    workingDirectory: $(helper_dir)
-    script: |
-      ./wait-for-server.sh
-
 - task: Npm@1
   displayName: 'aria-at: npm install'
   inputs:
@@ -155,6 +147,15 @@ steps:
   inputs:
     workingDir: $(helper_dir)\aria-at-automation-harness
     command: 'install'
+
+- task: Bash@3
+  displayName: Wait for automation-driver server
+  inputs:
+    targetType: 'inline'
+    workingDirectory: $(helper_dir)
+    script: |
+      ./wait-for-server.sh
+
 
 - task: Bash@3
   displayName: 'Start VoiceOver'
