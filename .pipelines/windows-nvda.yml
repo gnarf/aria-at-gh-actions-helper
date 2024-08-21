@@ -1,3 +1,6 @@
+# Manual trigger only
+trigger: none
+
 pool:
   vmImage: windows-latest
 

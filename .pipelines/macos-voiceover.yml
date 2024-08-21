@@ -1,3 +1,5 @@
+# Manual trigger only
+trigger: none
 
 variables:
   - name: empty
