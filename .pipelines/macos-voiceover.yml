@@ -80,6 +80,12 @@ steps:
     version: '20.x'
 
 
+# Checkouts section
+- checkout: self
+  path: helper
+  displayName: Checkout aria-at-gh-actions-helper
+
+# we need the helper to log this, so do it right after helper checkout
 - task: Bash@3
   displayName: Log job state QUEUED
   condition: ${{ ne(parameters['status_url'], '$(empty)') }}
@@ -88,10 +94,7 @@ steps:
     workingDirectory: $(helper)
     script: |
       ./report-status.sh QUEUED "\"work_dir\": \"${ARIA_AT_WORK_DIR}\","
-# Checkouts section
-- checkout: self
-  path: helper
-  displayName: Checkout aria-at-gh-actions-helper
+
 - checkout: aria-at-automation-harness
   path: helper/aria-at-automation-harness
   displayName: Checkout aria-at-automation-harness
