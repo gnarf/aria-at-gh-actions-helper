@@ -85,12 +85,9 @@ steps:
   condition: ${{ ne(parameters['status_url'], '$(empty)') }}
   inputs:
     targetType: inline
+    workingDirectory: $(helper)
     script: |
-      $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
-      $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
-      $body = @{'status'='QUEUED'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
-      Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
-
+      ./report-status.sh QUEUED "\"work_dir\": \"${ARIA_AT_WORK_DIR}\","
 # Checkouts section
 - checkout: self
   path: helper
@@ -134,18 +131,18 @@ steps:
 - task: Npm@1
   displayName: 'aria-at: npm install'
   inputs:
-    workingDir: $(helper_dir)\aria-at
+    workingDir: $(helper_dir)/aria-at
     command: 'install'
 - task: Npm@1
   displayName: 'aria-at: npm build'
   inputs:
-    workingDir: $(helper_dir)\aria-at
+    workingDir: $(helper_dir)/aria-at
     command: 'custom'
     customCommand: 'run build'
 - task: Npm@1
   displayName: 'aria-at-automation-harness: npm install'
   inputs:
-    workingDir: $(helper_dir)\aria-at-automation-harness
+    workingDir: $(helper_dir)/aria-at-automation-harness
     command: 'install'
 
 - task: Bash@3
@@ -192,11 +189,9 @@ steps:
   condition: and(succeeded(), ${{ ne(parameters['status_url'], '$(empty)') }} )
   inputs:
     targetType: inline
+    workingDirectory: $(helper)
     script: |
-      $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
-      $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
-      $body = @{'status'='RUNNING'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
-      Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
+      ./report-status.sh RUNNING "\"work_dir\": \"${ARIA_AT_WORK_DIR}\","
 
 - task: Bash@3
   displayName: Run harness
@@ -212,22 +207,19 @@ steps:
   condition: and(failed(), ${{ ne(parameters['status_url'], '$(empty)') }} )
   inputs:
     targetType: inline
+    workingDirectory: $(helper)
     script: |
-      $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
-      $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
-      $body = @{'status'='ERROR'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
-      Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
+      ./report-status.sh ERROR "\"work_dir\": \"${ARIA_AT_WORK_DIR}\","
 - task: Bash@3
   displayName: Log job state COMPLETED
   # weird syntaxing because parameters only exists in ${{ }} land, but succeeded() doesn't exist there
   condition: and(succeeded(), ${{ ne(parameters['status_url'], '$(empty)') }} )
   inputs:
     targetType: inline
+    workingDirectory: $(helper)
     script: |
-      $headerbits = $env:ARIA_AT_CALLBACK_HEADER -split ":\s*", 2
-      $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
-      $body = @{'status'='COMPLETED'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
-      Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
+      ./report-status.sh COMPLETED "\"work_dir\": \"${ARIA_AT_WORK_DIR}\","
+
 - task: PublishPipelineArtifact@1
   displayName: Publish logs
   # always run
