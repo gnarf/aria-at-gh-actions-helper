@@ -91,7 +91,7 @@ steps:
   condition: ${{ ne(parameters['status_url'], '$(empty)') }}
   inputs:
     targetType: inline
-    workingDirectory: $(helper)
+    workingDirectory: $(helper_dir)
     script: |
       ./report-status.sh QUEUED "\"work_dir\": \"${ARIA_AT_WORK_DIR}\","
 
@@ -192,7 +192,7 @@ steps:
   condition: and(succeeded(), ${{ ne(parameters['status_url'], '$(empty)') }} )
   inputs:
     targetType: inline
-    workingDirectory: $(helper)
+    workingDirectory: $(helper_dir)
     script: |
       ./report-status.sh RUNNING "\"work_dir\": \"${ARIA_AT_WORK_DIR}\","
 
@@ -210,7 +210,7 @@ steps:
   condition: and(failed(), ${{ ne(parameters['status_url'], '$(empty)') }} )
   inputs:
     targetType: inline
-    workingDirectory: $(helper)
+    workingDirectory: $(helper_dir)
     script: |
       ./report-status.sh ERROR "\"work_dir\": \"${ARIA_AT_WORK_DIR}\","
 - task: Bash@3
@@ -219,7 +219,7 @@ steps:
   condition: and(succeeded(), ${{ ne(parameters['status_url'], '$(empty)') }} )
   inputs:
     targetType: inline
-    workingDirectory: $(helper)
+    workingDirectory: $(helper_dir)
     script: |
       ./report-status.sh COMPLETED "\"work_dir\": \"${ARIA_AT_WORK_DIR}\","
 
