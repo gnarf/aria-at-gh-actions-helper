@@ -101,16 +101,6 @@ steps:
     version: $(aria_at_automation_driver_version)
     downloadPath: $(helper_dir)/aria-at-automation-driver
 
-- task: Bash@3
-  displayName: Decompress automation-driver
-  inputs:
-    targetType: 'inline'
-    workingDirectory: $(helper_dir)/aria-at-automation-driver
-    script: |
-      tar zvxf *.tar.gz
-      pwd
-      ls -al
-
 # Checkouts section
 - checkout: self
   path: helper
@@ -133,8 +123,10 @@ steps:
   displayName: Install automation-driver
   inputs:
     targetType: 'inline'
-    workingDirectory: $(helper_dir)/aria-at-automation-driver/package
+    workingDirectory: $(helper_dir)/aria-at-automation-driver
     script: |
+      tar zvxf *.tar.gz
+      cd package
       npm install
       DEBUG=* ./bin/at-driver install --unattended
 
