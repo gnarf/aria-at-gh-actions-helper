@@ -91,16 +91,6 @@ steps:
       $body = @{'status'='QUEUED'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
       Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
 
-- task: DownloadGitHubRelease@0
-  displayName: Download aria-at-automation-driver $(aria_at_automation_driver_version)
-  # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/download-github-release-v0?view=azure-pipelines
-  inputs:
-    connection: MyGitHubServiceConnection
-    userRepository: w3c/aria-at-automation-driver
-    defaultVersionType: specificTag
-    version: $(aria_at_automation_driver_version)
-    downloadPath: $(helper_dir)/aria-at-automation-driver
-
 # Checkouts section
 - checkout: self
   path: helper
@@ -118,6 +108,17 @@ steps:
     targetType: 'inline'
     workingDirectory: $(helper_dir)/aria-at
     script: git checkout ${{ parameters['aria_at_ref'] }}
+
+
+- task: DownloadGitHubRelease@0
+  displayName: Download aria-at-automation-driver $(aria_at_automation_driver_version)
+  # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/download-github-release-v0?view=azure-pipelines
+  inputs:
+    connection: MyGitHubServiceConnection
+    userRepository: w3c/aria-at-automation-driver
+    defaultVersionType: specificTag
+    version: $(aria_at_automation_driver_version)
+    downloadPath: $(helper_dir)/aria-at-automation-driver
 
 - task: Bash@3
   displayName: Install automation-driver
