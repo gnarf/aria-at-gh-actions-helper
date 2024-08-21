@@ -135,6 +135,17 @@ steps:
       npm install
       DEBUG=* ./bin/at-driver install --unattended
 
+- task: Bash@3
+  displayName: Install geckodriver
+  condition: ${{ eq( $parameters['browser'], 'firefox' ) }}
+  inputs:
+    targetType: 'inline'
+    workingDirectory: $(helper_dir)
+    script: |
+      mkdir geckodriver
+      ln -s $(which geckodriver) geckodriver/geckodriver
+      ls -al geckodriver
+
 - task: Npm@1
   displayName: 'aria-at: npm install'
   inputs:
