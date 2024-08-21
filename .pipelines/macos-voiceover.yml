@@ -108,6 +108,8 @@ steps:
     workingDirectory: $(helper_dir)/aria-at-automation-driver
     script: |
       tar zvxf *.tar.gz
+      pwd
+      ls -al
 
 # Checkouts section
 - checkout: self
