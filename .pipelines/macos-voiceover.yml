@@ -152,9 +152,9 @@ steps:
   displayName: Wait for automation-driver server
   inputs:
     targetType: 'inline'
-    workingDirectory: $(helper_dir)
+    workingDirectory: $(helper_dir)/aria-at-automation-driver/package
     script: |
-      ./wait-for-server.sh
+      ../../wait-for-server.sh
 
 
 - task: Bash@3
