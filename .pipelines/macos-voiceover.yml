@@ -1,19 +1,19 @@
-pool:
-  vmImage: windows-latest
 
 variables:
   - name: empty
     value: ''
   - name: helper_dir
-    value: '$(Agent.BuildDirectory)\helper'
+    value: '$(Agent.BuildDirectory)/helper'
+  - name: aria_at_automation_driver_version
+    value: 'v0.0.1-beta'
 
 parameters:
 - name: aria_at_ref
   default: master
 - name: browser
   default: chrome
-- name: nvda_version
-  default: 'latest'
+- name: macos_version
+  default: '14'
 - name: test_pattern
   default: '{reference/**,test-*-nvda.*}'
 - name: work_dir
@@ -25,13 +25,12 @@ parameters:
 - name: status_url
   default: $(empty)
 
+pool:
+  vmImage: macos-${{ paramaters['macos_version'] }}
+
+
 resources:
   repositories:
-    - repository: nvda-at-automation
-      type: github
-      endpoint: MyGitHubServiceConnection
-      name: Prime-Access-Consulting/nvda-at-automation
-      ref: main
     - repository: aria-at
       type: github
       endpoint: MyGitHubServiceConnection
@@ -53,7 +52,7 @@ resources:
 # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops
 steps:
 # Method borrowed from https://stackoverflow.com/a/63959970
-- task: PowerShell@2
+- task: Bash@3
   displayName: Setup env vars
   env:
     p_work_dir: ${{ parameters['work_dir'] }}
@@ -62,28 +61,26 @@ steps:
     p_status_url: ${{ parameters['status_url'] }}
     p_callback_header: ${{ parameters['callback_header'] }}
     p_browser: ${{ parameters['browser'] }}
-    p_nvda_version: ${{ parameters['nvda_version'] }}
+    p_macos_version: ${{ parameters['macos_version'] }}
   inputs:
     targetType: inline
     script: |
-      Write-Host "Making inputs available as an environment variable."
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$env:p_work_dir"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$env:p_test_pattern"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_URL;]$env:p_callback_url"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_STATUS_URL;]$env:p_status_url"
-      Write-Host "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$env:p_callback_header"
-      Write-Host "##vso[task.setvariable variable=BROWSER;]$env:p_browser"
-      Write-Host "##vso[task.setvariable variable=NVDA_VERSION;]$env:p_nvda_version"
+      echo "Making inputs available as an environment variable."
+      echo "##vso[task.setvariable variable=ARIA_AT_WORK_DIR;]$p_work_dir"
+      echo "##vso[task.setvariable variable=ARIA_AT_TEST_PATTERN;]$p_test_pattern"
+      echo "##vso[task.setvariable variable=ARIA_AT_CALLBACK_URL;]$p_callback_url"
+      echo "##vso[task.setvariable variable=ARIA_AT_STATUS_URL;]$p_status_url"
+      echo "##vso[task.setvariable variable=ARIA_AT_CALLBACK_HEADER;]$p_callback_header"
+      echo "##vso[task.setvariable variable=BROWSER;]$p_browser"
+      echo "##vso[task.setvariable variable=MACOS_VERSION;]$p_macos_version"
 
 - task: UseNode@1
   displayName: Install Node
   inputs:
     version: '20.x'
-# - task: GoTool@0
-#   displayName: Install Go
-#   inputs:
-#     version: '1.10'
-- task: PowerShell@2
+
+
+- task: Bash@3
   displayName: Log job state QUEUED
   condition: ${{ ne(parameters['status_url'], '$(empty)') }}
   inputs:
@@ -93,6 +90,17 @@ steps:
       $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
       $body = @{'status'='QUEUED'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
       Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
+
+- task: DownloadGitHubRelease@0
+  displayName: Download aria-at-automation-driver $(aria_at_automation_driver_version)
+  # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/download-github-release-v0?view=azure-pipelines
+  inputs:
+    connection: MyGitHubServiceConnection
+    userRepository: w3c/aria-at-automation-driver
+    defaultVersionType: specificTag
+    version: $(aria_at_automation_driver_version)
+    downloadPath: $(helper_dir)/aria-at-automation-driver
+
 
 # Checkouts section
 - checkout: self
@@ -105,55 +113,30 @@ steps:
   fetchDepth: 0
   path: helper/aria-at
   displayName: Checkout aria-at
-- task: PowerShell@2
+- task: Bash@3
   displayName: Checkout aria-at to ${{ parameters['aria_at_ref'] }}
   inputs:
     targetType: 'inline'
     workingDirectory: $(helper_dir)/aria-at
     script: git checkout ${{ parameters['aria_at_ref'] }}
-- checkout: nvda-at-automation
-  path: helper/nvda-at-automation
-  displayName: Checkout nvda-at-automation
-- task: DownloadGitHubRelease@0
-  displayName: Download nvda portable ${{ parameters['nvda_version'] }}
-  # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/download-github-release-v0?view=azure-pipelines
-  inputs:
-    connection: MyGitHubServiceConnection
-    userRepository: bocoup/aria-at-automation-nvda-builds
-    ${{ if ne(parameters['nvda_version'], 'latest')}}:
-      defaultVersionType: specificTag
-      version: ${{ parameters['nvda_version'] }}
-    downloadPath: $(helper_dir)/nvda-portable
-- task: PowerShell@2
-  displayName: Setup NVDA_PORTABLE_ZIP
-  inputs:
-    targetType: inline
-    script: |
-      $zipFile = Get-ChildItem $(helper_dir)\nvda-portable -File -Filter *.zip | Select-Object -First 1 -ExpandProperty FullName
-      Write-Host "NVDA_PORTABLE_ZIP=$zipFile"
-      Write-Host "##vso[task.setvariable variable=NVDA_PORTABLE_ZIP;]$zipFile"
-- task: PowerShell@2
-  displayName: Install Scream (virtual audio driver)
+
+- task: Bash@3
+  displayName: Install automation-driver
   inputs:
     targetType: 'inline'
+    workingDirectory: $(helper_dir)/aria-at-automation-driver/package
     script: |
-      Start-Service audio*
-      Invoke-WebRequest https://github.com/duncanthrax/scream/releases/download/3.6/Scream3.6.zip -OutFile $(helper_dir)\Scream3.6.zip
-      Expand-Archive -Path $(helper_dir)\Scream3.6.zip -DestinationPath $(helper_dir)\Scream
-      $cert = (Get-AuthenticodeSignature $(helper_dir)\Scream\Install\driver\Scream.sys).SignerCertificate
-      $store = [System.Security.Cryptography.X509Certificates.X509Store]::new("TrustedPublisher", "LocalMachine")
-      $store.Open("ReadWrite")
-      $store.Add($cert)
-      $store.Close()
-      cd $(helper_dir)\Scream\Install\driver
-      $(helper_dir)\Scream\Install\helpers\devcon install Scream.inf *Scream
-- task: PowerShell@2
-  displayName: Compile at-automation driver
+      npm install
+      DEBUG=* ./bin/at-driver install --unattended
+
+- task: Bash@3
+  displayName: Wait for automation-driver server
   inputs:
     targetType: 'inline'
-    workingDirectory: $(helper_dir)\nvda-at-automation\Server
+    workingDirectory: $(helper_dir)
     script: |
-      go build main\main.go
+      ./wait-for-server.sh
+
 - task: Npm@1
   displayName: 'aria-at: npm install'
   inputs:
@@ -170,7 +153,37 @@ steps:
   inputs:
     workingDir: $(helper_dir)\aria-at-automation-harness
     command: 'install'
-- task: PowerShell@2
+
+- task: Bash@3
+  displayName: 'Start VoiceOver'
+  inputs:
+    targetType: inline
+    script: "/System/Library/CoreServices/VoiceOver.app/Contents/MacOS/VoiceOverStarter"
+
+  # This feature must be enabled in order for the harness to inspect the
+  # the page (AppleScript is used for this purpose instead of
+  # SafariDriver because SafariDriver implements a "glass pane" which
+  # rejects the kinds of interactions--namely, key presses--that ARIA-AT
+  # tests must simulate).
+  # https://stackoverflow.com/questions/37802673/allow-javascript-from-apple-events-in-safari-through-terminal-mac
+- task: Bash@3
+  displayName: 'Configure Safari to Allow JavaScript from Apple Events'
+  inputs:
+    targetType: inline
+    script: defaults write -app Safari AllowJavaScriptFromAppleEvents 1
+
+  # Ensure that VoiceOver doesn't automatically read through the entirety of
+  # a webpage when its loaded and there isn't immediate keyboard interaction.
+  # This is turned on by default for some versions of MacOS
+  # https://support.apple.com/guide/voiceover/general-cpvouwebpageloading/mac
+- task: Bash@3
+  displayName: 'Configure VoiceOver not to "Automatically Speak Web Page"'
+  inputs:
+    targetType: inline
+    script: defaults write com.apple.VoiceOver4/default SCRCUserDefaultsAutomaticallySpeakWebPage 0
+
+
+- task: Bash@3
   displayName: Log job state RUNNING
   # weird syntaxing because parameters only exists in ${{ }} land, but succeeded() doesn't exist there
   condition: and(succeeded(), ${{ ne(parameters['status_url'], '$(empty)') }} )
@@ -182,15 +195,15 @@ steps:
       $body = @{'status'='RUNNING'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
       Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
 
-- task: PowerShell@2
+- task: Bash@3
   displayName: Run harness
   inputs:
     targetType: inline
     workingDirectory: $(helper_dir)
     script: |
-      & .\run-tester.ps1
+      ./run-tester.sh
 
-- task: PowerShell@2
+- task: Bash@3
   displayName: Log job state ERROR
   # weird syntaxing because parameters only exists in ${{ }} land, but failed() doesn't exist there
   condition: and(failed(), ${{ ne(parameters['status_url'], '$(empty)') }} )
@@ -201,7 +214,7 @@ steps:
       $headers = @{$headerbits[0]=$headerbits[1]; "Content-Type" = "application/json"}
       $body = @{'status'='ERROR'; 'externalLogsUrl'="$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"} | ConvertTo-JSON
       Invoke-WebRequest $env:ARIA_AT_STATUS_URL -Headers $headers -Method 'POST' -Body $body
-- task: PowerShell@2
+- task: Bash@3
   displayName: Log job state COMPLETED
   # weird syntaxing because parameters only exists in ${{ }} land, but succeeded() doesn't exist there
   condition: and(succeeded(), ${{ ne(parameters['status_url'], '$(empty)') }} )
