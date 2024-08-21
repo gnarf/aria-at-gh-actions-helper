@@ -137,7 +137,7 @@ steps:
 
 - task: Bash@3
   displayName: Install geckodriver
-  condition: ${{ eq( $parameters['browser'], 'firefox' ) }}
+  condition: ${{ eq( parameters['browser'], 'firefox' ) }}
   inputs:
     targetType: 'inline'
     workingDirectory: $(helper_dir)
