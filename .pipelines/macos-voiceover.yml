@@ -82,7 +82,9 @@ steps:
   displayName: restart speechsynthesisd
   inputs:
     targetType: inline
-    script: sudo killall -9 speechsynthesisd
+    script: |
+      sudo killall com.apple.speech.speechsynthesisd || echo "no speechsynthesisd"
+      sudo killall SpeechSynthesisServer || echo "no SpeechSynthesisServer"
 
 - task: Bash@3
   displayName: DEBUG-Say Something
