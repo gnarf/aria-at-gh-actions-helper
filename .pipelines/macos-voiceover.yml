@@ -82,7 +82,7 @@ steps:
   displayName: restart speechsynthesisd
   inputs:
     targetType: inline
-    script: pkill speechsynthesisd  say
+    script: killall -9 speechsynthesisd
 
 - task: Bash@3
   displayName: DEBUG-Say Something
