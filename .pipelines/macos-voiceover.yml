@@ -169,6 +169,11 @@ steps:
     workingDir: $(helper_dir)/aria-at-automation-harness
     command: 'install'
 - task: Bash@3
+  displayName: restart speechsynthesisd
+  inputs:
+    targetType: inline
+    script: pkill speechsynthesisd  say
+- task: Bash@3
   displayName: DEBUG-Say Something
   inputs:
     targetType: inline
