@@ -86,6 +86,8 @@ steps:
       sudo killall coreaudiod || echo "no coreaudiod"
       sudo killall com.apple.speech.speechsynthesisd || echo "no speechsynthesisd"
       sudo killall SpeechSynthesisServer || echo "no SpeechSynthesisServer"
+      sudo killall audioclocksyncd || echo "no audioclocksyncd"
+      sudo killall corespeechd || echo "no corespeechd"
       ps aux
 
 - task: Bash@3
