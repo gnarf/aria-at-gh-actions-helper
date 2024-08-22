@@ -95,6 +95,9 @@ jobs:
       - name: Setup Environment
         uses: guidepup/setup-action@0.15.3
 
+      - name: ps aux
+        run: ps aux
+
       - name: "automation-driver: npm install"
         working-directory: aria-at-automation-driver/package
         run: npm install
@@ -108,6 +111,9 @@ jobs:
       - name: Wait for server to be ready
         working-directory: aria-at-automation-driver/package
         run: ../../wait-for-server.sh
+
+      - name: ps aux
+        run: ps aux
 
       - name: Checkout aria-at ref ${{ inputs.aria_at_ref || 'master' }}
         uses: actions/checkout@v4
