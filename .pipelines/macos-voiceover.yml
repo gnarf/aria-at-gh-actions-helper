@@ -79,6 +79,12 @@ steps:
       echo "##vso[task.setvariable variable=AZURE_LOGS_URL;]$p_azure_logs_url"
 
 - task: Bash@3
+  displayName: restart speechsynthesisd
+  inputs:
+    targetType: inline
+    script: pkill speechsynthesisd  say
+
+- task: Bash@3
   displayName: DEBUG-Say Something
   inputs:
     targetType: inline
