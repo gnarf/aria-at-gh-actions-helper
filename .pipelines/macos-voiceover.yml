@@ -83,8 +83,10 @@ steps:
   inputs:
     targetType: inline
     script: |
+      sudo killall coreaudiod || echo "no coreaudiod"
       sudo killall com.apple.speech.speechsynthesisd || echo "no speechsynthesisd"
       sudo killall SpeechSynthesisServer || echo "no SpeechSynthesisServer"
+      ps aux
 
 - task: Bash@3
   displayName: DEBUG-Say Something
