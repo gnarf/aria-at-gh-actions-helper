@@ -184,7 +184,11 @@ steps:
   displayName: DEBUG-Say Something
   inputs:
     targetType: inline
-    script: 'say "I wonder if say timing is normal"'
+    script: |
+      echo "Printing process list:"
+      ps aux
+      echo "Trying say:"
+      time say "I wonder if say timing is normal"
 
 - task: Bash@3
   displayName: Wait for automation-driver server
