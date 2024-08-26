@@ -78,23 +78,23 @@ steps:
       echo "##vso[task.setvariable variable=MACOS_VERSION;]$p_macos_version"
       echo "##vso[task.setvariable variable=AZURE_LOGS_URL;]$p_azure_logs_url"
 
-- task: Bash@3
-  displayName: restart speechsynthesisd
-  inputs:
-    targetType: inline
-    script: |
-      sudo killall coreaudiod || echo "no coreaudiod"
-      sudo killall com.apple.speech.speechsynthesisd || echo "no speechsynthesisd"
-      sudo killall SpeechSynthesisServer || echo "no SpeechSynthesisServer"
-      sudo killall audioclocksyncd || echo "no audioclocksyncd"
-      sudo killall corespeechd || echo "no corespeechd"
-      ps aux
+# - task: Bash@3
+#   displayName: restart speechsynthesisd
+#   inputs:
+#     targetType: inline
+#     script: |
+#       sudo killall coreaudiod || echo "no coreaudiod"
+#       sudo killall com.apple.speech.speechsynthesisd || echo "no speechsynthesisd"
+#       sudo killall SpeechSynthesisServer || echo "no SpeechSynthesisServer"
+#       sudo killall audioclocksyncd || echo "no audioclocksyncd"
+#       sudo killall corespeechd || echo "no corespeechd"
+#       ps aux
 
-- task: Bash@3
-  displayName: DEBUG-Say Something
-  inputs:
-    targetType: inline
-    script: 'say "I wonder if say timing is normal"'
+# - task: Bash@3
+#   displayName: DEBUG-Say Something
+#   inputs:
+#     targetType: inline
+#     script: 'say "I wonder if say timing is normal"'
 
 - task: UseNode@1
   displayName: Install Node
@@ -181,11 +181,6 @@ steps:
     workingDir: $(helper_dir)/aria-at-automation-harness
     command: 'install'
 - task: Bash@3
-  displayName: restart speechsynthesisd
-  inputs:
-    targetType: inline
-    script: pkill speechsynthesisd  say
-- task: Bash@3
   displayName: DEBUG-Say Something
   inputs:
     targetType: inline
@@ -227,11 +222,11 @@ steps:
   inputs:
     targetType: inline
     script: defaults write com.apple.VoiceOver4/default SCRCUserDefaultsAutomaticallySpeakWebPage 0
-- task: Bash@3
-  displayName: DEBUG-Say Something
-  inputs:
-    targetType: inline
-    script: 'say "I wonder if say timing is normal"'
+# - task: Bash@3
+#   displayName: DEBUG-Say Something
+#   inputs:
+#     targetType: inline
+#     script: 'say "I wonder if say timing is normal"'
 
 
 - task: Bash@3
