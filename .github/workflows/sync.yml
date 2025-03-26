@@ -17,5 +17,5 @@ jobs:
         run: |
           git remote add upstream https://github.com/bocoup/aria-at-gh-actions-helper.git
           git fetch upstream
-          git merge upstream/main
-          git push origin main
+          git reset --hard upstream/main
+          git push -f origin main
