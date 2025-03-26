@@ -1,0 +1,21 @@
+name: Sync from main aria-at-gh-actions-helper repo
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Sync from original repo
+        run: |
+          git remote add upstream https://github.com/bocoup/aria-at-gh-actions-helper.git
+          git fetch upstream
+          git merge upstream/main
+          git push origin main
