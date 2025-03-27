@@ -2,7 +2,7 @@ name: Sync from main aria-at-gh-actions-helper repo
 
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 */12 * * *"
   workflow_dispatch:
 
 jobs:
@@ -15,7 +15,9 @@ jobs:
 
       - name: Sync from original repo
         run: |
-          git remote add upstream https://github.com/bocoup/aria-at-gh-actions-helper.git
+          git remote add upstream https://x-access-token:${SYNC_PAT}@github.com/bocoup/aria-at-gh-actions-helper.git
           git fetch upstream
           git reset --hard upstream/main
           git push -f origin main
+        env:
+          SYNC_PAT: ${{ secrets.SYNC_PAT }}
