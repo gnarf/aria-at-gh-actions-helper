@@ -1,0 +1,36 @@
+{
+  "name": "stressor",
+  "version": "0.0.0",
+  "description": "Stress test Test Plans via CI workflows",
+  "main": "stress-test.mts",
+  "scripts": {
+    "cancel-runs": "tsx cancel-all-workflows.mts",
+    "test-types": "tsc --noEmit",
+    "prettier": "prettier --write \"**/*.{js,jsx,css,mts}\"",
+    "prettier:check": "prettier --check \"**/*.{js,jsx,css,mts}\""
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@commander-js/extra-typings": "^13.0.0",
+    "@octokit/rest": "^21.0.1",
+    "@types/lodash.isequal": "^4.5.8",
+    "jest-diff": "^29.7.0",
+    "lodash.isequal": "^4.5.0",
+    "ngrok": "^5.0.0-beta.2",
+    "p-limit": "^6.1.0",
+    "typescript": "^5.5.4",
+    "word-wrap": "^1.2.5"
+  },
+  "devDependencies": {
+    "@octokit/types": "^13.5.0",
+    "@tsconfig/node20": "^20.1.4",
+    "@types/node": "^20.14.12",
+    "prettier": "^3.5.1",
+    "tslib": "^2.6.3",
+    "tsx": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

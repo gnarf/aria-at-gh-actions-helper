@@ -1,0 +1,36 @@
+name: Run the project's self-tests
+on: [push]
+
+jobs:
+  runtest_task:
+    name: Validate TypeScript types
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Install NodeJS 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+        working-directory: ./stressor
+      - name: Test types
+        run: npm run test-types
+        working-directory: ./stressor
+  runprettier_task:
+    name: Validate prettier formatting.
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Install NodeJS 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+        working-directory: ./stressor
+      - name: prettier check
+        run: npm run prettier:check
+        working-directory: ./stressor
