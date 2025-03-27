@@ -15,14 +15,8 @@ jobs:
 
       - name: Sync from original repo
         run: |
-          # Save the current workflow file
-          cp .github/workflows/sync.yml /tmp/sync.yml
-
-          # Sync with upstream
+          git config pull.rebase false
           git remote add upstream https://github.com/bocoup/aria-at-gh-actions-helper.git
           git fetch upstream
-          git reset --hard upstream/main
-
-          # Restore the workflow file and push
-          cp /tmp/sync.yml .github/workflows/sync.yml
-          git push -f origin main
+          git pull upstream main --allow-unrelated-histories
+          git push origin main
