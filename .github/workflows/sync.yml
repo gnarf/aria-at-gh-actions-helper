@@ -1,4 +1,4 @@
-name: Sync from main aria-at-gh-actions-helper repo
+name: Sync with upstream aria-at-gh-actions-helper repo
 
 on:
   schedule:
