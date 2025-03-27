@@ -15,14 +15,11 @@ jobs:
 
       - name: Sync from original repo
         run: |
-          # Save our workflow file
-          cp .github/workflows/sync.yml /tmp/sync.yml
-
-          # Reset to upstream state
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
           git remote add upstream https://github.com/bocoup/aria-at-gh-actions-helper.git
           git fetch upstream
-          git reset --hard upstream/main
-
-          # Restore our workflow file and force push
-          cp /tmp/sync.yml .github/workflows/sync.yml
-          git push -f origin main
+          git config pull.rebase false
+          git config merge.ours.driver true
+          git pull upstream main --allow-unrelated-histories -X theirs
+          git push origin main
