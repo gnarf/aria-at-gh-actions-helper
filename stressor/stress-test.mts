@@ -50,7 +50,11 @@ function parseTestPlanOption(value: string, previous: string[]) {
 
 const program = new Command()
   .requiredOption('-o, --owner <string>', 'repository owner')
-  .requiredOption('-r, --repo <string>', 'repository name')
+  .requiredOption(
+    '-r, --repo <string>',
+    'repository name',
+    'aria-at-gh-actions-helper'
+  )
   .option('-b, --branch <string>', 'Git branch', 'main')
   .option(
     '-f, --results-from-file',
@@ -103,7 +107,7 @@ const testingMatrix = [
   },
   {
     workflowId: 'voiceover-test.yml',
-    browsers: ['safari', 'chrome', 'firefox']
+    browsers: ['safari', 'chrome']
   }
 ];
 
