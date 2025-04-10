@@ -80,5 +80,6 @@ node_modules/.bin/aria-at-harness-host run-plan \
   --at-driver-url=ws://127.0.0.1:3031/session \
   --reference-hostname=127.0.0.1 \
   --web-driver-browser=${BROWSER} \
+  --time-after-keys=10000 \
   '{reference/**,test-*-voiceover_macos.*}' 2>&1 | \
     tee harness-run.log
