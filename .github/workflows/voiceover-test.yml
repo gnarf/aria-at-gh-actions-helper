@@ -62,7 +62,7 @@ env:
 
 jobs:
   voiceover-test:
-    runs-on: macos-${{ inputs.macos_version }}
+    runs-on: macos-${{ inputs.macos_version }}-large
     steps:
       # Checkout all repos first (helps cache purposes)
       - uses: actions/checkout@v4
