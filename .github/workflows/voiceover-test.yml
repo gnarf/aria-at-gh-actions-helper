@@ -39,7 +39,8 @@ on:
         options:
           - "13"
           - "14"
-        default: "14"
+          - "15"
+        default: "15"
       browser:
         description: |
           The browser to use for testing, "chrome" or "firefox" or "safari", default "safari"
@@ -62,7 +63,7 @@ env:
 
 jobs:
   voiceover-test:
-    runs-on: macos-${{ inputs.macos_version }}
+    runs-on: macos-${{ inputs.macos_version }}-xlarge
     steps:
       # Checkout all repos first (helps cache purposes)
       - uses: actions/checkout@v4
