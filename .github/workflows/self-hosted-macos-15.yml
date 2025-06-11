@@ -1,4 +1,4 @@
-name: voiceover-test
+name: voiceover-test-self-hosted
 on:
   workflow_dispatch:
     inputs:
