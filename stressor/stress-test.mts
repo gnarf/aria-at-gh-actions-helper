@@ -104,6 +104,10 @@ const testPlans = options.testPlan;
 // have 3 jobs left it matters... :)
 const testingMatrix = [
   {
+    workflowId: 'jaws-test.yml',
+    browsers: ['chrome', 'firefox']
+  },
+  {
     workflowId: 'nvda-test.yml',
     browsers: ['chrome', 'firefox']
   },
