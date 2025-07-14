@@ -95,7 +95,7 @@ jobs:
           ref: ${{ inputs.aria_at_ref || 'master' }}
 
       - name: Install the ARIA-AT Automation Harness package
-        run: npm install https://github.com/w3c/aria-at-automation-harness.git#jaws-confirm-setting
+        run: npm install https://github.com/w3c/aria-at-automation-harness.git#jaws-fix-testing
 
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
