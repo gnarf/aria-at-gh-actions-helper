@@ -130,7 +130,13 @@ else
 }
 
 # temporary settings tweaking (eventually will be implemented in harness)
-Add-Content -Path "$env:APPDATA\Freedom Scientific\JAWS\2025\Settings\enu\default.jcf" -Value @"
+[System.IO.Directory]::CreateDirectory("$env:APPDATA\Freedom Scientific\JAWS\2025\Settings\enu\")
+$settings = "$env:APPDATA\Freedom Scientific\JAWS\2025\Settings\enu\default.jcf"
+if (-Not (Test-Path $settings))
+{
+    New-Item $settings
+}
+Add-Content -Path $settings -Value @"
 
 [HTML]
 SayAllOnDocumentLoad=0
