@@ -95,7 +95,7 @@ jobs:
           ref: ${{ inputs.aria_at_ref || 'master' }}
 
       - name: Install the ARIA-AT Automation Harness package
-        run: npm install @bocoup/aria-at-automation-harness@"1.0.2"
+        run: npm install https://github.com/w3c/aria-at-automation-harness#startup-settings
 
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
